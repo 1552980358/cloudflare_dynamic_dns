@@ -1,4 +1,6 @@
 pub mod error;
+mod argument;
+
 use error::Error;
 
 pub struct Configuration {
