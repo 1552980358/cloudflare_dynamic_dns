@@ -1,12 +1,18 @@
-use std::env;
+use std::{
+    env,
+    path::PathBuf
+};
 
 mod help;
 
+mod cloudflare_config;
+use cloudflare_config::HandleCloudflareConfig;
+
 pub(super) enum Argument {
 
-    ConfigFile(String),
+    Config(PathBuf),
 
-    CloudflareConfigFile(String),
+    CloudflareConfig(PathBuf),
 
 }
 
@@ -14,11 +20,14 @@ impl<'argument> Argument {
 
     pub(super) fn from_env() -> Vec<Self> {
         let mut vec = Vec::new();
-        let mut env_args_iter = env::args().skip(1);
-        while let Some(arg) = env_args_iter.next() {
+        let mut args = env::args().skip(1);
+        while let Some(arg) = args.next() {
             match arg.as_str() {
-                help::args::SHORT | help::args::LONG | help::args::SYMBOL => {
+                help::args::LONG | help::args::SHORT | help::args::SYMBOL => {
                     help::print_message();
+                }
+                cloudflare_config::args::LONG | cloudflare_config::args::SHORT => {
+                    args.handle_cloudflare_config(&mut vec);
                 }
                 // TODO: To be implemented
                 _ => {

@@ -11,10 +11,12 @@ pub(super) mod args {
 fn message_str() -> String {
     String::from(
         concat!(
-            "Usage: cloudflare_dynamic_dns [options...]\n",
+            "Usage: cloudflare_dynamic_dns [options...] \n",
             "Options: \n",
             "  --help, -h, ? \n",
-            "      Display all available command line options.\n",
+            "      Display all available command line options \n",
+            "  --cloudflare, -cf <path> \n", 
+            "      Read cloudflare json configurations from <path> \n",
             "\n",
         )
     )
