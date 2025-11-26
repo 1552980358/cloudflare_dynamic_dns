@@ -25,3 +25,13 @@ pub(super) fn print_message() {
     // Exit normally
     exit(0);
 }
+
+#[cfg(test)]
+mod test {
+
+    #[test]
+    fn test_message_str() {
+        println!("{}", super::message_str());
+    }
+
+}
