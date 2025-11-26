@@ -17,6 +17,8 @@ fn message_str() -> String {
             "      Display all available command line options \n",
             "  --cloudflare, -cf <path> \n", 
             "      Read cloudflare json configurations from <path> \n",
+            "  --config, -c <path> \n",
+            "      Read configuration from <path> \n",
             "\n",
         )
     )

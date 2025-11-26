@@ -4,9 +4,11 @@ use std::{
 };
 
 mod help;
-
 mod cloudflare_config;
+mod config;
+
 use cloudflare_config::HandleCloudflareConfig;
+use config::HandleConfig;
 
 pub(super) enum Argument {
 
@@ -28,6 +30,9 @@ impl<'argument> Argument {
                 }
                 cloudflare_config::args::LONG | cloudflare_config::args::SHORT => {
                     args.handle_cloudflare_config(&mut vec);
+                }
+                config::args::LONG | config::args::SHORT => {
+                    args.handle_config(&mut vec);
                 }
                 // TODO: To be implemented
                 _ => {
