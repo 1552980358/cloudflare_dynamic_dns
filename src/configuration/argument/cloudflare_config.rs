@@ -21,9 +21,9 @@ impl HandleCloudflareConfig for Skip<Args> {
         let Some(path) = self.next() else {
             panic!("Missing argument <path> to cloudflare json configuration file");
         };
-        let path_buf = PathBuf::from(path);
+        let path_buf = PathBuf::from(&path);
         if !path_buf.exists() || !path_buf.is_file() {
-            panic!("Cloudflare json configuration file <path> does not exist");
+            panic!("Specified cloudflare json configuration file ({path}) does not exist");
         }
         vec.push(Argument::CloudflareConfig(path_buf))
     }
