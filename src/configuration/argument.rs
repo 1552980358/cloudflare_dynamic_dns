@@ -20,7 +20,7 @@ pub(super) enum Argument {
 
 impl<'argument> Argument {
 
-    pub(super) fn from_env() -> Vec<Self> {
+    pub(super) fn all() -> Vec<Self> {
         let mut vec = Vec::new();
         let mut args = env::args().skip(1);
         while let Some(arg) = args.next() {
