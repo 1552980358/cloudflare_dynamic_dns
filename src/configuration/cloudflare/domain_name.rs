@@ -10,9 +10,7 @@ pub struct DomainName {
     #[serde(default = "default::time_to_live")]
     pub time_to_live: u16,
     #[serde(default)]
-    pub comment: Option<String>,
-    #[serde(rename = "unavailable-hide", default = "bool::default")]
-    pub unavailable_hide: bool,
+    pub comment: Option<String>
 }
 
 #[derive(Deserialize, Default)]
