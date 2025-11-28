@@ -15,11 +15,11 @@ pub struct DomainName {
     pub unavailable_hide: bool,
 }
 
-#[derive(Deserialize)]
-pub enum RecordType { A, AAAA }
-
-impl Default for RecordType {
-    fn default() -> Self { Self::A }
+#[derive(Deserialize, Default)]
+pub enum RecordType {
+    #[default]
+    A,
+    AAAA
 }
 
 mod default {
