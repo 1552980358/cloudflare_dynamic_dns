@@ -8,8 +8,8 @@ use serde::Deserialize;
 pub mod domain_name;
 
 use super::{
-    Argument,
     Result,
+    argument::Argument,
     error::Error
 };
 use domain_name::DomainName;
