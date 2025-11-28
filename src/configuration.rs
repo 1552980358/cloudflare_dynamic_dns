@@ -1,6 +1,7 @@
 pub mod error;
 mod argument;
 mod cloudflare;
+mod config;
 
 use error::Error;
 
