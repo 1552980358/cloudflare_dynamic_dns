@@ -22,7 +22,7 @@ impl<'argument> Argument {
 
     pub(super) fn all() -> Vec<Self> {
         let mut vec = Vec::new();
-        let mut args = env::args().skip(1);
+        let mut args = env::args().skip(1).peekable();
         while let Some(arg) = args.next() {
             match arg.as_str() {
                 help::args::LONG | help::args::SHORT | help::args::SYMBOL => {

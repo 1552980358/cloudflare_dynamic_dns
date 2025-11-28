@@ -1,6 +1,9 @@
 use std::{
     env::Args,
-    iter::Skip,
+    iter::{
+        Peekable,
+        Skip
+    },
     path::PathBuf
 };
 
@@ -17,7 +20,7 @@ pub(super) trait HandleConfig {
     fn handle_config(&mut self, vec: &mut Vec<Argument>);
 }
 
-impl HandleConfig for Skip<Args>  {
+impl HandleConfig for Peekable<Skip<Args>>  {
     fn handle_config(&mut self, vec: &mut Vec<Argument>) {
         let Some(path) = self.next() else {
             panic!("Missing argument <path> to configuration file");

@@ -1,8 +1,12 @@
 use std::{
     env::Args,
-    iter::Skip,
+    iter::{
+        Peekable,
+        Skip
+    },
     path::PathBuf
 };
+
 use super::Argument;
 
 pub(super) mod args {
@@ -16,7 +20,7 @@ pub(super) trait HandleCloudflareConfig {
     fn handle_cloudflare_config(&mut self, vec: &mut Vec<Argument>);
 }
 
-impl HandleCloudflareConfig for Skip<Args> {
+impl HandleCloudflareConfig for Peekable<Skip<Args>> {
     fn handle_cloudflare_config(&mut self, vec: &mut Vec<Argument>) {
         let Some(path) = self.next() else {
             panic!("Missing argument <path> to cloudflare json configuration file");
