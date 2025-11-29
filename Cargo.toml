@@ -21,3 +21,4 @@ version = "1.0.145"
 
 [dependencies.tokio]
 version = "1.48.0"
+features = ["full"]
