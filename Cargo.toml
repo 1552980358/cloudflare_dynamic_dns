@@ -8,9 +8,16 @@ edition = "2024"
 [dependencies.log]
 version = "0.4.28"
 
+[dependencies.reqwest]
+version = "0.12.24"
+features = ["json"]
+
 [dependencies.serde]
 version = "1.0.228"
 features = ["derive"]
 
 [dependencies.serde_json]
 version = "1.0.145"
+
+[dependencies.tokio]
+version = "1.48.0"
