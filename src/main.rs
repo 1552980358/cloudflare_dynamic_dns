@@ -1,6 +1,6 @@
-mod api;
+mod rest_api;
 mod configuration;
 
-fn main() {
-    println!("Hello, world!");
+#[tokio::main]
+async fn main() {
 }

@@ -89,15 +89,15 @@ mod test {
     async fn get_ip_sb() {
         match Client::new().access_ip_sb().await {
             IpSB::V4(v4) => {
-                trace!(target: "api.ip-sb","IPv4={v4}");
+                trace!(target: "rest-api.ip-sb","IPv4={v4}");
                 println!("IPv4={v4}");
             }
             IpSB::V6(v6) => {
-                trace!(target: "api.ip-sb","IPv6={v6}");
+                trace!(target: "rest-api.ip-sb","IPv6={v6}");
                 println!("IPv6={v6}");
             }
             IpSB::Both { v4, v6 } => {
-                trace!(target: "api.ip-sb","IPv4={v4} IPv6={v6}");
+                trace!(target: "rest-api.ip-sb","IPv4={v4} IPv6={v6}");
                 println!("IPv4={v4} IPv6={v6}");
             }
         }
