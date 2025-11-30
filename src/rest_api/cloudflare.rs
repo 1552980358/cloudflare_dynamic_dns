@@ -2,6 +2,7 @@ use reqwest::Client;
 
 pub mod error;
 mod record;
+mod verify_user_token;
 
 use super::GetCloudflareApi;
 use error::Error;

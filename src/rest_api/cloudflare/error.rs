@@ -1,4 +1,7 @@
 #[derive(Debug)]
 pub enum Error {
-    // TODO: Placeholder enum declaration
+    Network,
+    Unauthorized,
+    DecodeResponse,
+    Unknown
 }
