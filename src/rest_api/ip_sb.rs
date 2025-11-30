@@ -13,12 +13,6 @@ pub struct IpSBApi<'ip_sb_api> {
     client: &'ip_sb_api Client
 }
 
-impl IpSBApi<'_> {
-    pub async fn get_ip(&self) -> Result<IP> {
-        ip::get(self.client).await
-    }
-}
-
 impl GetIpSBApi for Client {
     fn ip_sb_api(&'_ self) -> IpSBApi<'_> {
         IpSBApi { client: self }
