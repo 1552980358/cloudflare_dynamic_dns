@@ -60,7 +60,7 @@ impl SendRequest for Client {
             )?
             .json::<ResponseBody>().await
             .map(|response_body| response_body.ip)
-            .map_err(|_| Error::Server)
+            .map_err(|error| if error.is_decode() { Error::DecodeResponse } else { Error::Network })
     }
 }
 

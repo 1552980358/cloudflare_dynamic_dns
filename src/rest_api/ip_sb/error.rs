@@ -2,5 +2,6 @@
 pub enum Error {
     Network,
     Server,
+    DecodeResponse,
     Unknown
 }
