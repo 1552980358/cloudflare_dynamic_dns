@@ -1,8 +1,9 @@
+
 pub mod cloudflare;
 pub mod ip_sb;
 
-use ip_sb::IpSB;
+use ip_sb::IpSBApi;
 
-pub trait AccessIpSB {
-    async fn access_ip_sb(&self) -> IpSB;
+pub trait GetIpSBApi {
+    fn ip_sb_api(&'_ self) -> IpSBApi<'_>;
 }
