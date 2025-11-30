@@ -1,6 +1,7 @@
-pub mod error;
-
 use reqwest::Client;
+
+pub mod error;
+mod record;
 
 use super::GetCloudflareApi;
 use error::Error;
