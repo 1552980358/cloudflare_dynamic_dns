@@ -14,7 +14,7 @@ struct ResponseBody {
     pub success: bool
 }
 
-impl CloudflareApi<'_> {
+impl CloudflareApi {
     pub async fn verify_user_token(&self) -> Result<()> {
         self.client.get(URL)
             .send().await
