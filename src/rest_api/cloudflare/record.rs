@@ -1,4 +1,5 @@
 mod list;
+mod delete;
 
 use serde::{Deserialize, Serialize};
 
