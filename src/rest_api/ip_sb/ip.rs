@@ -1,4 +1,4 @@
-use reqwest::Client;
+use reqwest::{Client, StatusCode};
 use serde::Deserialize;
 use tokio::join;
 
@@ -53,7 +53,7 @@ impl SendRequest for Client {
                     // When incorrect user input is entered,
                     // the server returns an HTTP 400 Error (Bad Request),
                     // along with a JSON-encoded error message.
-                    Some(status_code) if status_code == 400 => Error::Server,
+                    Some(status_code) if status_code == StatusCode::BAD_REQUEST => Error::Server,
                     _ if error.is_connect() || error.is_request() || error.is_timeout() => Error::Network,
                     _ => Error::Unknown
                 }

@@ -1,3 +1,4 @@
+use reqwest::StatusCode;
 use serde::Deserialize;
 
 use super::{
@@ -29,14 +30,14 @@ impl CloudflareApi {
                      *     "success": false,
                      *     "errors": [
                      *          {
-                     *            "code": 9106,
-                     *            "message": "Missing X-Auth-Key, X-Auth-Email or Authorization headers"
+                     *              "code": 9106,
+                     *              "message": "Missing X-Auth-Key, X-Auth-Email or Authorization headers"
                      *          }
                      *     ]
                      * }
                      * ```
                      ****************************************************************/
-                    Some(status_code) if status_code == 400 => Error::Internal,
+                    Some(status_code) if status_code == StatusCode::BAD_REQUEST => Error::Internal,
                     /****************************************************************
                      * Invalid token: 401
                      * ```
@@ -44,14 +45,14 @@ impl CloudflareApi {
                      *     "success": false,
                      *     "errors": [
                      *          {
-                     *            "code": 10000,
-                     *            "message": "Authentication error"
+                     *              "code": 10000,
+                     *              "message": "Authentication error"
                      *          }
                      *     ]
                      * }
                      * ```
                      ****************************************************************/
-                    Some(status_code) if status_code == 401 => Error::Unauthorized,
+                    Some(status_code) if status_code == StatusCode::UNAUTHORIZED => Error::Unauthorized,
                     /****************************************************************
                      * Invalid zone id: 403
                      * ```
@@ -59,14 +60,14 @@ impl CloudflareApi {
                      *     "success": false,
                      *     "errors": [
                      *         {
-                     *         "code": 10000,
-                     *         "message": "Authentication error"
+                     *             "code": 10000,
+                     *             "message": "Authentication error"
                      *         }
                      *     ]
                      * }
                      * ```
                      ****************************************************************/
-                    Some(status_code) if status_code == 403 => Error::InvalidZone,
+                    Some(status_code) if status_code == StatusCode::FORBIDDEN => Error::InvalidZone,
                     _ => Error::Unknown
                 }
             )?

@@ -1,3 +1,4 @@
+use reqwest::StatusCode;
 use serde::Deserialize;
 
 use super::{
@@ -33,7 +34,7 @@ impl CloudflareApi {
                      * }
                      * ```
                      ****************************************************************/
-                    Some(status_code) if status_code == 400 => Error::Internal,
+                    Some(status_code) if status_code == StatusCode::BAD_REQUEST => Error::Internal,
                     /****************************************************************
                      * Invalid Authorization header 401
                      * ```
@@ -48,7 +49,7 @@ impl CloudflareApi {
                      * }
                      * ```
                      ****************************************************************/
-                    Some(status_code) if status_code == 401 => Error::Unauthorized,
+                    Some(status_code) if status_code == StatusCode::UNAUTHORIZED => Error::Unauthorized,
                     /****************************************************************
                      * Invalid zone 403
                      * ```
@@ -63,7 +64,7 @@ impl CloudflareApi {
                      * }
                      * ```
                      ****************************************************************/
-                    Some(status_code) if status_code == 403 => Error::InvalidZone,
+                    Some(status_code) if status_code == StatusCode::FORBIDDEN => Error::InvalidZone,
                     /****************************************************************
                      * Invalid zone 404
                      * ```
@@ -80,7 +81,7 @@ impl CloudflareApi {
                      * }
                      * ```
                      ****************************************************************/
-                    Some(status_code) if status_code == 404 => Error::InvalidRecord,
+                    Some(status_code) if status_code == StatusCode::NOT_FOUND => Error::InvalidRecord,
                     _ => Error::Unknown
                 }
             )?

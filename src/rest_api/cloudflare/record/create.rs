@@ -1,3 +1,4 @@
+use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
 
 use super::{
@@ -67,7 +68,7 @@ impl CloudflareApi {
                      * }
                      * ```
                      ****************************************************************/
-                    Some(status_code) if status_code == 400 => Error::Internal,
+                    Some(status_code) if status_code == StatusCode::BAD_REQUEST => Error::Internal,
                     /****************************************************************
                      * Invalid Authorization header 401
                      * ```
@@ -82,7 +83,7 @@ impl CloudflareApi {
                      * }
                      * ```
                      ****************************************************************/
-                    Some(status_code) if status_code == 401 => Error::Unauthorized,
+                    Some(status_code) if status_code == StatusCode::UNAUTHORIZED => Error::Unauthorized,
                     /****************************************************************
                      * Invalid zone id 403
                      * ```
@@ -97,7 +98,7 @@ impl CloudflareApi {
                      * }
                      * ```
                      ****************************************************************/
-                    Some(status_code) if status_code == 403 => Error::InvalidZone,
+                    Some(status_code) if status_code == StatusCode::FORBIDDEN => Error::InvalidZone,
                     _ => Error::Unknown
                 }
             )?
