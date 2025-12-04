@@ -21,7 +21,7 @@ impl CloudflareApi {
             .map_err(|error|
                 match error.status() {
                     Some(status_code) if status_code == StatusCode::BAD_REQUEST => Error::Unauthorized,
-                    _ if error.is_connect() || error.is_request() || error.is_timeout() => Error::Network,
+                    _ if error.is_request() || error.is_connect() || error.is_timeout() || error.is_status() => Error::Network,
                     _ => Error::Unknown
                 }
             )?

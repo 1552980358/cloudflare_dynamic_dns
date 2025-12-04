@@ -82,6 +82,7 @@ impl CloudflareApi {
                      * ```
                      ****************************************************************/
                     Some(status_code) if status_code == StatusCode::NOT_FOUND => Error::InvalidRecord,
+                    _ if error.is_request() || error.is_connect() || error.is_timeout() || error.is_status() => Error::Network,
                     _ => Error::Unknown
                 }
             )?
