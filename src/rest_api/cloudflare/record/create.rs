@@ -1,4 +1,3 @@
-use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
 
 use super::{
@@ -7,6 +6,7 @@ use super::{
         CloudflareApi,
         Result
     },
+    handle_network_error::HandleReqwestError,
     Record,
     RecordType
 };
@@ -38,71 +38,7 @@ impl CloudflareApi {
         self.client.post(self.create_record_url())
             .json(&RequestBody::new(domain_name, value, record_type, time_to_live, is_proxied))
             .send().await
-            .map_err(|error|
-                match error.status() {
-                    /****************************************************************
-                     * Missing Authorization header 400
-                     * ```
-                     * {
-                     * "success": false,
-                     *     "errors": [
-                     *         {
-                     *             "code": 9106,
-                     *             "message": "Missing X-Auth-Key, X-Auth-Email or Authorization headers"
-                     *         }
-                     *     ]
-                     * }
-                     * ```
-                     * Missing request body 400
-                     * ````
-                     * {
-                     *     "result": null,
-                     *     "success": false,
-                     *     "errors": [
-                     *         {
-                     *             "code": 9207,
-                     *             "message": "Request body is invalid."
-                     *         }
-                     *     ],
-                     *     "messages": []
-                     * }
-                     * ```
-                     ****************************************************************/
-                    Some(status_code) if status_code == StatusCode::BAD_REQUEST => Error::Internal,
-                    /****************************************************************
-                     * Invalid Authorization header 401
-                     * ```
-                     * {
-                     *     "success": false,
-                     *     "errors": [
-                     *         {
-                     *             "code": 10000,
-                     *             "message": "Authentication error"
-                     *         }
-                     *     ]
-                     * }
-                     * ```
-                     ****************************************************************/
-                    Some(status_code) if status_code == StatusCode::UNAUTHORIZED => Error::Unauthorized,
-                    /****************************************************************
-                     * Invalid zone id 403
-                     * ```
-                     * {
-                     *     "success": false,
-                     *     "errors": [
-                     *         {
-                     *             "code": 10000,
-                     *             "message": "Authentication error"
-                     *         }
-                     *     ]
-                     * }
-                     * ```
-                     ****************************************************************/
-                    Some(status_code) if status_code == StatusCode::FORBIDDEN => Error::InvalidZone,
-                    _ if error.is_request() || error.is_connect() || error.is_timeout() || error.is_status() => Error::Network,
-                    _ => Error::Unknown
-                }
-            )?
+            .handle_reqwest_error()?
             .json::<ResponseBody>().await
             .map_err(|error|
                 if error.is_body() || error.is_decode() { Error::DecodeResponse } else { Error::Unknown }

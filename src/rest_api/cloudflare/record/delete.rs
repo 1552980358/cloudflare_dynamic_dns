@@ -1,4 +1,3 @@
-use reqwest::StatusCode;
 use serde::Deserialize;
 
 use super::{
@@ -7,6 +6,7 @@ use super::{
         CloudflareApi,
         Result
     },
+    handle_network_error::HandleReqwestError,
 };
 
 #[derive(Deserialize)]
@@ -18,74 +18,7 @@ impl CloudflareApi {
     pub async fn delete_record(&self, record: &String) -> Result<()> {
         self.client.delete(self.delete_record_url(record))
             .send().await
-            .map_err(|error|
-                match error.status() {
-                    /****************************************************************
-                     * Missing Authorization header 400
-                     * ```
-                     * {
-                     *     "success": false,
-                     *     "errors": [
-                     *         {
-                     *           "code": 9106,
-                     *           "message": "Missing X-Auth-Key, X-Auth-Email or Authorization headers"
-                     *         }
-                     *     ]
-                     * }
-                     * ```
-                     ****************************************************************/
-                    Some(status_code) if status_code == StatusCode::BAD_REQUEST => Error::Internal,
-                    /****************************************************************
-                     * Invalid Authorization header 401
-                     * ```
-                     * {
-                     *     "success": false,
-                     *     "errors": [
-                     *          {
-                     *            "code": 10000,
-                     *            "message": "Authentication error"
-                     *          }
-                     *     ]
-                     * }
-                     * ```
-                     ****************************************************************/
-                    Some(status_code) if status_code == StatusCode::UNAUTHORIZED => Error::Unauthorized,
-                    /****************************************************************
-                     * Invalid zone 403
-                     * ```
-                     * {
-                     *     "success": false,
-                     *     "errors": [
-                     *          {
-                     *            "code": 10000,
-                     *            "message": "Authentication error"
-                     *          }
-                     *     ]
-                     * }
-                     * ```
-                     ****************************************************************/
-                    Some(status_code) if status_code == StatusCode::FORBIDDEN => Error::InvalidZone,
-                    /****************************************************************
-                     * Invalid zone 404
-                     * ```
-                     * {
-                     *     "result": null,
-                     *     "success": false,
-                     *     "errors": [
-                     *         {
-                     *           "code": 81044,
-                     *           "message": "Record does not exist."
-                     *         }
-                     *     ],
-                     *     "messages": []
-                     * }
-                     * ```
-                     ****************************************************************/
-                    Some(status_code) if status_code == StatusCode::NOT_FOUND => Error::InvalidRecord,
-                    _ if error.is_request() || error.is_connect() || error.is_timeout() || error.is_status() => Error::Network,
-                    _ => Error::Unknown
-                }
-            )?
+            .handle_reqwest_error()?
             .json::<ResponseBody>().await
             .map_err(|error|
                 if error.is_body() || error.is_decode() { Error::DecodeResponse } else { Error::Unknown }
