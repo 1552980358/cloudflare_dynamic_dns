@@ -19,7 +19,7 @@ mod url {
     pub(super) const V6: &str = "https://api-ipv6.ip.sb/jsonip";
 }
 
-impl IpSBApi<'_> {
+impl IpSBApi {
     pub async fn get_ip(&self) -> Result<IP> {
         match join!(self.client.send_request_to(url::V4), self.client.send_request_to(url::V6)) {
             (Ok(v4), Ok(v6)) => Ok(IP::Both { v4, v6 }),
@@ -67,15 +67,12 @@ impl SendRequest for Client {
 #[cfg(test)]
 mod test {
     use log::info;
-    use reqwest::Client;
-    use super::{
-        super::GetIpSBApi,
-        IP
-    };
+    
+    use super::{IP, IpSBApi};
 
     #[tokio::test]
     async fn test_ip() {
-        match Client::new().ip_sb_api().get_ip().await {
+        match IpSBApi::new().get_ip().await {
             Ok(ip) => match ip {
                 IP::V4(v4) => {
                     info!("IPv4={v4}");
