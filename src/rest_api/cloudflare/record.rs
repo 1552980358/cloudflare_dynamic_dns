@@ -1,6 +1,7 @@
 mod list;
 mod create;
 mod delete;
+mod update;
 
 use serde::{Deserialize, Serialize};
 
