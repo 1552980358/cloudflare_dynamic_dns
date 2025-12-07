@@ -20,7 +20,7 @@ pub struct Configuration {
 pub type Result<T> = std::result::Result<T, Error>;
 
 impl Configuration {
-    fn new() -> Result<Self> {
+    pub fn new() -> Result<Self> {
         let arguments = Argument::all();
 
         let cloudflare = arguments.get_cloudflare()?;
