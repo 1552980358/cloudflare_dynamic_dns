@@ -72,6 +72,23 @@ impl HandleReqwestError for Result<Response, ReqwestError> {
                  * ```
                  ****************************************************************/
                 Some(status_code) if status_code == StatusCode::FORBIDDEN => Error::InvalidZone,
+                /****************************************************************
+                 * Invalid zone 404
+                 * ```
+                 * {
+                 *     "result": null,
+                 *     "success": false,
+                 *     "errors": [
+                 *         {
+                 *           "code": 81044,
+                 *           "message": "Record does not exist."
+                 *         }
+                 *     ],
+                 *     "messages": []
+                 * }
+                 * ```
+                 ****************************************************************/
+                Some(status_code) if status_code == StatusCode::NOT_FOUND => Error::InvalidRecord,
                 _ if error.is_request() || error.is_connect() || error.is_timeout() || error.is_status() => Error::Network,
                 _ => Error::Unknown
             }
