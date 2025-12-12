@@ -1,4 +1,7 @@
-use std::fmt::{Display, Formatter};
+use std::{
+    fmt::{Display, Formatter},
+    ops::Deref
+};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Copy, Clone)]
@@ -12,6 +15,17 @@ impl PartialEq for RecordType {
             (RecordType::NS, RecordType::NS)
         )
     }
+}
+
+impl Deref for RecordType {
+
+    type Target = Self;
+
+    fn deref(&self) -> &Self::Target {
+        // Just return self, as all RecordType are singleton
+        &self
+    }
+
 }
 
 const RECORD_TYPE_A: &str = "A";
