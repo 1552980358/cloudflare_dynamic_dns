@@ -1,11 +1,13 @@
+use serde::Deserialize;
+
 mod list;
 mod create;
 mod delete;
+mod handle_network_error;
+mod record_type;
 mod update;
 
-mod handle_network_error;
-
-use serde::{Deserialize, Serialize};
+pub use record_type::RecordType;
 
 #[derive(Deserialize)]
 pub struct Record {
@@ -18,6 +20,3 @@ pub struct Record {
     pub record_type: RecordType,
     pub proxied: bool
 }
-
-#[derive(Serialize, Deserialize)]
-pub enum RecordType { A, AAAA, NS }
