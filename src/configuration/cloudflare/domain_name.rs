@@ -13,7 +13,7 @@ pub struct DomainName {
     pub comment: Option<String>
 }
 
-#[derive(Deserialize, Default)]
+#[derive(Deserialize, Default, Clone, Copy)]
 pub enum RecordType {
     #[default]
     A,
