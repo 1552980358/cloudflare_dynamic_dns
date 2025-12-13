@@ -33,10 +33,10 @@ struct ResponseBody {
 
 impl CloudflareApi {
     pub async fn create_record(
-        &self, domain_name: &String, value: &String, record_type: RecordType, time_to_live: u16, is_proxied: bool
+        &self, domain_name: &String, value: &String, record_type: &RecordType, time_to_live: u16, is_proxied: bool
     ) -> Result<Record> {
         self.client.post(self.create_record_url())
-            .json(&RequestBody::new(domain_name, value, record_type, time_to_live, is_proxied))
+            .json(&RequestBody::new(domain_name, value, &record_type, time_to_live, is_proxied))
             .send().await
             .handle_reqwest_error()?
             .json::<ResponseBody>().await
@@ -50,11 +50,11 @@ impl CloudflareApi {
 }
 
 impl RequestBody {
-    fn new(domain_name: &String, value: &String, record_type: RecordType, time_to_live: u16, is_proxied: bool) -> Self {
+    fn new(domain_name: &String, value: &String, record_type: &RecordType, time_to_live: u16, is_proxied: bool) -> Self {
         Self {
-            domain_name: domain_name.clone(),
-            value: value.clone(),
-            record_type,
+            domain_name: domain_name.to_owned(),
+            value: value.to_owned(),
+            record_type: *record_type,
             time_to_live,
             is_proxied
         }
