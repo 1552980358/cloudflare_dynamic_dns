@@ -3,8 +3,8 @@ use serde::Deserialize;
 #[derive(Deserialize)]
 pub struct DomainName {
     pub name: String,
-    #[serde(rename="record-type", default)]
-    pub record_type: RecordType,
+    #[serde(rename="domain-type", default)]
+    pub domain_type: DomainType,
     #[serde(default = "default::proxied")]
     pub proxied: bool,
     #[serde(default = "default::time_to_live")]
@@ -12,7 +12,7 @@ pub struct DomainName {
 }
 
 #[derive(Deserialize, Default, Clone, Copy)]
-pub enum RecordType {
+pub enum DomainType {
     #[default]
     A,
     AAAA
