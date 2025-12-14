@@ -14,6 +14,24 @@ pub enum IP {
     Both { v4: String, v6: String }
 }
 
+impl IP {
+
+    pub fn v4(&self) -> Option<String> {
+        match self {
+            Self::V4(v4) | Self::Both { v4, .. } => Some(v4.to_owned()),
+            _ => None
+        }
+    }
+
+    pub fn v6(&self) -> Option<String> {
+        match self {
+            Self::V6(v6) | Self::Both { v6, .. } => Some(v6.to_owned()),
+            _ => None
+        }
+    }
+
+}
+
 mod url { 
     pub(super) const V4: &str = "https://api-ipv4.ip.sb/jsonip";
     pub(super) const V6: &str = "https://api-ipv6.ip.sb/jsonip";
