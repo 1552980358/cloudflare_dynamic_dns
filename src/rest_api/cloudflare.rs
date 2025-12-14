@@ -8,7 +8,7 @@ use reqwest::{
 };
 
 pub mod error;
-mod record;
+pub mod record;
 mod verify_user_token;
 
 use super::CloudflareApi;
