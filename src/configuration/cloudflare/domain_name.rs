@@ -8,9 +8,7 @@ pub struct DomainName {
     #[serde(default = "default::proxied")]
     pub proxied: bool,
     #[serde(default = "default::time_to_live")]
-    pub time_to_live: u16,
-    #[serde(default)]
-    pub comment: Option<String>
+    pub time_to_live: u16
 }
 
 #[derive(Deserialize, Default, Clone, Copy)]
