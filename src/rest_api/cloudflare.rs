@@ -23,9 +23,7 @@ impl CloudflareApi {
         let Ok(authorization_value) = HeaderValue::from_str(&format!("Bearer {}", &token)) else {
             panic!("Error occurred when building authorization header value");
         };
-        if let None = headers.insert(AUTHORIZATION, authorization_value) {
-            panic!("Error occurred when adding authorization header");
-        }
+        headers.insert(AUTHORIZATION, authorization_value);
 
         let client = Client::builder()
             .default_headers(headers)
