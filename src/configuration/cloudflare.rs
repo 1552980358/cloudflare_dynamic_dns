@@ -13,6 +13,7 @@ use domain_name::DomainName;
 pub struct Cloudflare {
     pub token: String,
     pub zone: String,
+    #[serde(rename = "domain-names")]
     pub domain_names: Vec<DomainName>,
 }
 
