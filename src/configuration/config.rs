@@ -7,11 +7,16 @@ use super::{
 };
 
 mod timeout;
+use timeout::Timeout;
 
 #[derive(Deserialize, Default)]
 pub struct Config {
     #[serde(rename = "unavailable-hide", default = "default::unavailable_hide")]
-    pub unavailable_hide: bool
+    pub unavailable_hide: bool,
+    #[serde(rename = "ip.sb-timeout", default)]
+    pub ip_sb_timeout: Timeout,
+    #[serde(rename = "cloudflare-timeout", default)]
+    pub cloudflare_timeout: Timeout
     // TODO: Non-finalized declaration, leave for future needed
 }
 
