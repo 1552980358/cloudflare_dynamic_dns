@@ -6,12 +6,11 @@ use serde::Deserialize;
 #[derive(Deserialize, Default)]
 pub struct Timeout {
     #[serde(default = "default::total")]
-    pub total: u64,
-    #[serde(default = "default::connection")]
-    pub connection: u64,
+    total: u64,
     #[serde(default = "default::connect")]
+    connect: u64,
     #[serde(default = "default::read")]
-    pub read: u64
+    read: u64
 }
 
 mod default {
@@ -22,4 +21,10 @@ mod default {
 
     pub(super) fn read() -> u64 { 30 }
 
+}
+
+impl Timeout {
+    pub fn all(&self) -> (u64, u64, u64) { 
+        (self.total, self.connect, self.read) 
+    }
 }
