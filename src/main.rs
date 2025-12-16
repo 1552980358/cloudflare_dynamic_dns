@@ -19,7 +19,7 @@ async fn main() {
         });
 
     let (token, zone, (total, connect, read)) = (
-        &configuration.cloudflare.token, &configuration.cloudflare.zone, configuration.config.ip_sb_timeout.all()
+        &configuration.cloudflare.token, &configuration.cloudflare.zone, configuration.config.cloudflare_timeout.all()
     );
     use rest_api::CloudflareApi;
     let cloudflare_api = CloudflareApi::new(&token, &zone, total, connect, read);
