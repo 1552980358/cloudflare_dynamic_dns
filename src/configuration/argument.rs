@@ -1,16 +1,12 @@
 use std::{
-    env,
-    path::PathBuf
+    path::PathBuf,
+    env
 };
 
 mod help;
 mod cloudflare_config;
 mod config;
 mod proxied;
-
-use cloudflare_config::HandleCloudflareConfig;
-use config::HandleConfig;
-use proxied::HandleProxied;
 
 pub(super) enum Argument {
 
@@ -30,15 +26,18 @@ impl<'argument> Argument {
         while let Some(arg) = args.next() {
             match arg.as_str() {
                 proxied::args::LONG | proxied::args::SHORT => {
+                    use proxied::HandleProxied;
                     args.handle_proxied(&mut vec);
                 }
                 help::args::LONG | help::args::SHORT | help::args::SYMBOL => {
                     help::print_message();
                 }
                 cloudflare_config::args::LONG | cloudflare_config::args::SHORT => {
+                    use cloudflare_config::HandleCloudflareConfig;
                     args.handle_cloudflare_config(&mut vec);
                 }
                 config::args::LONG | config::args::SHORT => {
+                    use config::HandleConfig;
                     args.handle_config(&mut vec);
                 }
                 // TODO: To be implemented

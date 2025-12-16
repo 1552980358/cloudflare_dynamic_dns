@@ -1,5 +1,3 @@
-use std::process::exit;
-
 pub(super) mod args {
 
     pub const LONG: &'static str = "--help";
@@ -27,6 +25,7 @@ fn message_str() -> String {
 pub(super) fn print_message() {
     println!("{}", message_str());
     // Exit normally
+    use std::process::exit;
     exit(0);
 }
 

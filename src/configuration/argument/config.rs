@@ -1,10 +1,6 @@
 use std::{
-    env::Args,
-    iter::{
-        Peekable,
-        Skip
-    },
-    path::PathBuf
+    iter::{Peekable, Skip},
+    env::Args
 };
 
 use super::Argument;
@@ -25,6 +21,8 @@ impl HandleConfig for Peekable<Skip<Args>>  {
         let Some(path) = self.next() else {
             panic!("Missing argument <path> to configuration file");
         };
+        
+        use std::path::PathBuf;
         let path_buf = PathBuf::from(&path);
         if !path_buf.exists() || !path_buf.is_file() {
             panic!("Configuration file path ({path}) does not exist");

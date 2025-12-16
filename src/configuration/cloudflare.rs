@@ -4,7 +4,6 @@ pub mod domain_name;
 
 use super::{
     argument::Argument,
-    error::Error,
     Result
 };
 use domain_name::DomainName;
@@ -45,9 +44,15 @@ impl GetCloudflare for Vec<Argument> {
 
         use std::fs::read_to_string;
         let cloudflare_config_json_str = read_to_string(&path_buf)
-            .map_err(|_| Error::CloudflareImportFail(path_buf.to_string_lossy().to_string()))?;
+            .map_err(|_| {
+                use super::error::Error;
+                Error::CloudflareImportFail(path_buf.to_string_lossy().to_string())
+            })?;
 
         serde_json::from_str(&cloudflare_config_json_str)
-            .map_err(|_| Error::CloudflareImportFail(path_buf.to_string_lossy().to_string()))
+            .map_err(|_| {
+                use super::error::Error;
+                Error::CloudflareImportFail(path_buf.to_string_lossy().to_string())
+            })
     }
 }

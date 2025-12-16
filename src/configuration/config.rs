@@ -2,7 +2,6 @@ use serde::Deserialize;
 
 use super::{
     argument::Argument,
-    error::Error,
     Result
 };
 
@@ -35,10 +34,16 @@ impl GetConfig for Vec<Argument> {
 
         if let Some(path_buf) = path_buf {
             use std::fs::read_to_string;
-            let config_json_str = read_to_string(&path_buf).map_err(|_| Error::ConfigImportFail(path_buf.to_string_lossy().to_string()))?;
+            let config_json_str = read_to_string(&path_buf).map_err(|_| {
+                use super::error::Error;
+                Error::ConfigImportFail(path_buf.to_string_lossy().to_string())
+            })?;
 
             serde_json::from_str(&config_json_str)
-                .map_err(|_| Error::ConfigImportFail(path_buf.to_string_lossy().to_string()))
+                .map_err(|_| {
+                    use super::error::Error;
+                    Error::ConfigImportFail(path_buf.to_string_lossy().to_string())
+                })
         }
         else {
             Ok(Config::default())

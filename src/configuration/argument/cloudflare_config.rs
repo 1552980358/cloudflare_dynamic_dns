@@ -1,19 +1,13 @@
 use std::{
-    env::Args,
-    iter::{
-        Peekable,
-        Skip
-    },
-    path::PathBuf
+    iter::{Peekable, Skip},
+    env::Args
 };
 
 use super::Argument;
 
 pub(super) mod args {
-
     pub const LONG: &'static str = "--cloudflare";
     pub const SHORT: &'static str = "-cf";
-
 }
 
 pub(super) trait HandleCloudflareConfig {
@@ -25,6 +19,8 @@ impl HandleCloudflareConfig for Peekable<Skip<Args>> {
         let Some(path) = self.next() else {
             panic!("Missing argument <path> to cloudflare json configuration file");
         };
+
+        use std::path::PathBuf;
         let path_buf = PathBuf::from(&path);
         if !path_buf.exists() || !path_buf.is_file() {
             panic!("Specified cloudflare json configuration file ({path}) does not exist");

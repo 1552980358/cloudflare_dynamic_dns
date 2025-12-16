@@ -6,10 +6,8 @@ mod argument;
 mod proxied;
 
 use error::Error;
-use argument::Argument;
-use cloudflare::{Cloudflare, GetCloudflare};
-use config::{Config, GetConfig};
-use proxied::GetProxied;
+use cloudflare::Cloudflare;
+use config::Config;
 
 pub struct Configuration {
     pub cloudflare: Cloudflare,
@@ -21,11 +19,15 @@ pub type Result<T> = std::result::Result<T, Error>;
 
 impl Configuration {
     pub fn new() -> Result<Self> {
+        use argument::Argument;
         let arguments = Argument::all();
 
-        let cloudflare = arguments.get_cloudflare()?;
-        let config = arguments.get_config()?;
-        let proxied = arguments.get_proxied();
+        use cloudflare::GetCloudflare;
+        use config::GetConfig;
+        use proxied::GetProxied;
+        let (cloudflare, config, proxied) = (
+            arguments.get_cloudflare()?, arguments.get_config()?, arguments.get_proxied()
+        );
 
         let configuration = Self { cloudflare, config, proxied };
         Ok(configuration)

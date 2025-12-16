@@ -1,19 +1,14 @@
 use std::{
+    iter::{Peekable, Skip},
     env::Args,
-    iter::{
-        Peekable,
-        Skip
-    }
 };
 use serde::Deserialize;
 
 use super::Argument;
 
 pub(super) mod args {
-
     pub const LONG: &'static str = "--proxied";
     pub const SHORT: &'static str = "-p";
-
 }
 
 pub(super) trait HandleProxied {
