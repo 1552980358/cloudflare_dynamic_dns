@@ -1,7 +1,7 @@
 use reqwest::Client;
 
 pub mod error;
-mod ip;
+pub mod ip;
 
 use super::IpSBApi;
 use error::Error;

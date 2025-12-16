@@ -61,10 +61,26 @@ async fn main() {
         handle_proxied(&cloudflare_api, &records, &domain_names, is_proxied).await;
     }
     else {
+        use rest_api::IpSBApi;
+        let ip = IpSBApi::new().get_ip().await
+            .unwrap_or_else(|error| {
+                use rest_api::ip_sb::error::Error;
+                let error_message = match error {
+                    Error::Network => { "Network error occurred when sending request to ip.sb api" }
+                    Error::Server => { "Server error responded when requesting ip address from ip.sb api" }
+                    Error::DecodeResponse => { "Deserializing error occurred when processing ip.sb api json response" }
+                    Error::Unknown => { "Unknown error occurred when requesting ip address from ip.sb api" }
+                };
+
+                use log::error;
+                error!(target: "main", "{error_message}");
+                panic!("{error_message}");
+            });
+
         let (domain_names, unavailable_hide) = (
             &configuration.cloudflare.domain_names, configuration.config.unavailable_hide
         );
-        handle_ip_update(&cloudflare_api, &records, &domain_names, unavailable_hide).await;
+        handle_ip_update(&cloudflare_api, &records, &domain_names, &ip, unavailable_hide).await;
     }
 }
 
@@ -114,24 +130,10 @@ async fn handle_record_proxied_update(cloudflare_api: &CloudflareApi, record_id:
     }
 }
 
+use rest_api::ip_sb::ip::IP;
+
 #[inline]
-async fn handle_ip_update(cloudflare_api: &CloudflareApi, records: &Vec<Record>, domain_names: &Vec<DomainName>, unavailable_hide: bool) {
-    use rest_api::IpSBApi;
-    let ip = IpSBApi::new().get_ip().await
-        .unwrap_or_else(|error| {
-            use rest_api::ip_sb::error::Error;
-            let error_message = match error {
-                Error::Network => { "Network error occurred when sending request to ip.sb api" }
-                Error::Server => { "Server error responded when requesting ip address from ip.sb api" }
-                Error::DecodeResponse => { "Deserializing error occurred when processing ip.sb api json response" }
-                Error::Unknown => { "Unknown error occurred when requesting ip address from ip.sb api" }
-            };
-
-            use log::error;
-            error!(target: "main", "{error_message}");
-            panic!("{error_message}");
-        });
-
+async fn handle_ip_update(cloudflare_api: &CloudflareApi, records: &Vec<Record>, domain_names: &Vec<DomainName>, ip: &IP, unavailable_hide: bool) {
     for domain_name in domain_names {
         let record = records.iter()
             .find(|record| record.domain_name == domain_name.name && record.record_type == domain_name.domain_type);
