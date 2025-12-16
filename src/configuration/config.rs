@@ -6,6 +6,8 @@ use super::{
     Result
 };
 
+mod timeout;
+
 #[derive(Deserialize, Default)]
 pub struct Config {
     #[serde(rename = "unavailable-hide", default = "default::unavailable_hide")]
