@@ -18,10 +18,11 @@ async fn main() {
             panic!("{error_message}");
         });
 
-    use rest_api::CloudflareApi;
-    let cloudflare_api = CloudflareApi::new(
-        &configuration.cloudflare.token, &configuration.cloudflare.zone
+    let (token, zone, (total, connect, read)) = (
+        &configuration.cloudflare.token, &configuration.cloudflare.zone, configuration.config.ip_sb_timeout.all()
     );
+    use rest_api::CloudflareApi;
+    let cloudflare_api = CloudflareApi::new(&token, &zone, total, connect, read);
     if let Err(error) = cloudflare_api.verify_user_token().await {
         use rest_api::cloudflare::error::Error;
         let error_message = match error {
