@@ -62,8 +62,10 @@ async fn main() {
         handle_proxied(&cloudflare_api, &records, &domain_names, is_proxied).await;
     }
     else {
+        let (total, connect, read) = configuration.config.ip_sb_timeout.all();
         use rest_api::IpSBApi;
-        let ip = IpSBApi::new().get_ip().await
+        let ip = IpSBApi::new(total, connect, read)
+            .get_ip().await
             .unwrap_or_else(|error| {
                 use rest_api::ip_sb::error::Error;
                 let error_message = match error {

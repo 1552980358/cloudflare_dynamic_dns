@@ -92,7 +92,7 @@ mod test {
 
     #[tokio::test]
     async fn test_ip() {
-        match IpSBApi::new().get_ip().await {
+        match IpSBApi::new(300, 120, 30).get_ip().await {
             Ok(ip) => match ip {
                 IP::V4(v4) => {
                     info!("IPv4={v4}");
