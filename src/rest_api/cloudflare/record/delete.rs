@@ -2,11 +2,9 @@ use serde::Deserialize;
 
 use super::{
     super::{
-        error::Error,
         CloudflareApi,
         Result
     },
-    handle_network_error::HandleReqwestError,
 };
 
 #[derive(Deserialize)]
@@ -16,15 +14,24 @@ struct ResponseBody {
 
 impl CloudflareApi {
     pub async fn delete_record(&self, record: &String) -> Result<()> {
+        use super::handle_network_error::HandleReqwestError;
+        
         self.client.delete(self.delete_record_url(record))
             .send().await
             .handle_reqwest_error()?
             .json::<ResponseBody>().await
-            .map_err(|error|
+            .map_err(|error| {
+                use super::super::error::Error;
                 if error.is_body() || error.is_decode() { Error::DecodeResponse } else { Error::Unknown }
-            )
+            })
             .and_then(|response_body|
-                if response_body.success { Ok(()) } else { Err(Error::Server) }
+                if response_body.success { 
+                    Ok(()) 
+                } 
+                else {
+                    use super::super::error::Error;
+                    Err(Error::Server)
+                }
             )
     }
 }

@@ -1,12 +1,7 @@
 use serde::Deserialize;
 
 use super::{
-    super::{
-        error::Error,
-        CloudflareApi,
-        Result
-    },
-    handle_network_error::HandleReqwestError,
+    super::{CloudflareApi, Result},
     Record
 };
 
@@ -19,15 +14,24 @@ struct ResponseBody {
 
 impl CloudflareApi {
     pub async fn list_record(&self) -> Result<Vec<Record>> {
+        use super::handle_network_error::HandleReqwestError;
+
         self.client.get(self.list_record_url())
             .send().await
             .handle_reqwest_error()?
             .json::<ResponseBody>().await
-            .map_err(|error|
+            .map_err(|error| {
+                use super::super::error::Error;
                 if error.is_body() || error.is_decode() { Error::DecodeResponse } else { Error::Unknown }
-            )
+            })
             .and_then(|response_body|
-                if response_body.success { Ok(response_body.records) } else { Err(Error::Server) }
+                if response_body.success {
+                    Ok(response_body.records)
+                }
+                else {
+                    use super::super::error::Error;
+                    Err(Error::Server)
+                }
             )
     }
 }

@@ -1,7 +1,3 @@
-use std::{
-    fmt::{Display, Formatter},
-    ops::Deref
-};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Copy, Clone)]
@@ -11,11 +7,12 @@ impl PartialEq for RecordType {
     fn eq(&self, other: &Self) -> bool {
         matches!(
             (self, other),
-            (RecordType::A, RecordType::A) | (RecordType::AAAA, RecordType::AAAA) |
-            (RecordType::NS, RecordType::NS)
+            (RecordType::A, RecordType::A) | (RecordType::AAAA, RecordType::AAAA) | (RecordType::NS, RecordType::NS)
         )
     }
 }
+
+use std::ops::Deref;
 
 impl Deref for RecordType {
 
@@ -31,6 +28,8 @@ impl Deref for RecordType {
 const RECORD_TYPE_A: &str = "A";
 const RECORD_TYPE_AAAA: &str = "A";
 const RECORD_TYPE_NS: &str = "NS";
+
+use std::fmt::{Display, Formatter};
 
 impl Display for RecordType {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {

@@ -1,12 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use super::{
-    super::{
-        error::Error,
-        CloudflareApi,
-        Result
-    },
-    handle_network_error::HandleReqwestError,
+    super::{CloudflareApi, Result},
     Record,
     RecordType
 };
@@ -35,16 +30,25 @@ impl CloudflareApi {
     pub async fn create_record(
         &self, domain_name: &String, value: &String, record_type: &RecordType, time_to_live: u16, is_proxied: bool
     ) -> Result<Record> {
+        use super::handle_network_error::HandleReqwestError;
+        
         self.client.post(self.create_record_url())
             .json(&RequestBody::new(domain_name, value, &record_type, time_to_live, is_proxied))
             .send().await
             .handle_reqwest_error()?
             .json::<ResponseBody>().await
-            .map_err(|error|
+            .map_err(|error| {
+                use super::super::error::Error;
                 if error.is_body() || error.is_decode() { Error::DecodeResponse } else { Error::Unknown }
-            )
+            })
             .and_then(|response_body|
-                if response_body.success { Ok(response_body.result) } else { Err(Error::Server) }
+                if response_body.success { 
+                    Ok(response_body.result) 
+                } 
+                else {
+                    use super::super::error::Error;
+                    Err(Error::Server) 
+                }
             )
     }
 }

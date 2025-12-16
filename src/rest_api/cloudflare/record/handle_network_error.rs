@@ -1,17 +1,21 @@
 // noinspection SpellCheckingInspection
-use reqwest::{Error as ReqwestError, Response, StatusCode};
+use reqwest::{Error, Response};
 
-use super::super::error::Error;
+use super::super::Result;
 
 // noinspection SpellCheckingInspection
 pub(super) trait HandleReqwestError {
-    fn handle_reqwest_error(self) -> Result<Response, Error>;
+    fn handle_reqwest_error(self) -> Result<Response>;
 }
 
-impl HandleReqwestError for Result<Response, ReqwestError> {
+impl HandleReqwestError for std::result::Result<Response, Error> {
     // noinspection SpellCheckingInspection
-    fn handle_reqwest_error(self) -> Result<Response, Error> {
-        self.map_err(|error|
+    fn handle_reqwest_error(self) -> Result<Response> {
+        self.map_err(|error| {
+            use reqwest::StatusCode;
+            
+            use super::super::error::Error;
+            
             match error.status() {
                 /****************************************************************
                  * Missing Authorization header 400
@@ -92,6 +96,6 @@ impl HandleReqwestError for Result<Response, ReqwestError> {
                 _ if error.is_request() || error.is_connect() || error.is_timeout() || error.is_status() => Error::Network,
                 _ => Error::Unknown
             }
-        )
+        })
     }
 }

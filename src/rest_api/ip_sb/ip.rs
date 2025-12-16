@@ -1,12 +1,7 @@
-use reqwest::{Client, StatusCode};
+use reqwest::Client;
 use serde::Deserialize;
-use tokio::join;
 
-use super::{
-    error::Error,
-    IpSBApi,
-    Result
-};
+use super::{IpSBApi, Result};
 
 pub enum IP {
     V4(String),
@@ -39,11 +34,13 @@ mod url {
 
 impl IpSBApi {
     pub async fn get_ip(&self) -> Result<IP> {
+        use tokio::join;
         match join!(self.client.send_request_to(url::V4), self.client.send_request_to(url::V6)) {
             (Ok(v4), Ok(v6)) => Ok(IP::Both { v4, v6 }),
             (Ok(v4), Err(_)) => Ok(IP::V4(v4)),
             (Err(_), Ok(v6)) => Ok(IP::V6(v6)),
             (Err(v4_err), Err(v6_err)) => {
+                use super::error::Error;
                 // Any single network error will cause to network error returned
                 if matches!(v4_err, Error::Network) || matches!(v6_err, Error::Network) { Err(Error::Network) }
                 // Any single server error will cause to server error returned
@@ -66,7 +63,9 @@ struct ResponseBody {
 impl SendRequest for Client {
     async fn send_request_to(&self, api_url: &str) -> Result<String> {
         self.get(api_url).send().await
-            .map_err(|error|
+            .map_err(|error| {
+                use reqwest::StatusCode;
+                use super::error::Error;
                 match error.status() {
                     // When incorrect user input is entered,
                     // the server returns an HTTP 400 Error (Bad Request),
@@ -75,10 +74,13 @@ impl SendRequest for Client {
                     _ if error.is_connect() || error.is_request() || error.is_timeout() => Error::Network,
                     _ => Error::Unknown
                 }
-            )?
+            })?
             .json::<ResponseBody>().await
             .map(|response_body| response_body.ip)
-            .map_err(|error| if error.is_decode() { Error::DecodeResponse } else { Error::Network })
+            .map_err(|error| {
+                use super::error::Error;
+                if error.is_decode() { Error::DecodeResponse } else { Error::Network }
+            })
     }
 }
 
