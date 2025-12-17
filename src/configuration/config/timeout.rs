@@ -3,7 +3,7 @@ use serde::Deserialize;
 /**
  * For default timeout, see [Hypertext Transfer Protocol (HTTP) Timeouts](https://www.ietf.org/archive/id/draft-thomson-hybi-http-timeout-00.html#rfc.section.1.1)
  **/
-#[derive(Deserialize, Default)]
+#[derive(Deserialize)]
 pub struct Timeout {
     #[serde(default = "default::total")]
     total: u64,
@@ -26,5 +26,15 @@ mod default {
 impl Timeout {
     pub fn all(&self) -> (u64, u64, u64) { 
         (self.total, self.connect, self.read) 
+    }
+}
+
+impl Default for Timeout {
+    fn default() -> Self {
+        Self {
+            total: default::total(),
+            connect: default::connect(),
+            read: default::read()
+        }
     }
 }
